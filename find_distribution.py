@@ -17,5 +17,8 @@ def compute_loss(data1, data2):
 def ks_compare(data1, data2):
     return ks_2samp(data1, data2).pvalue > ks_2samp(data1, data2).statistic
 
+def ks_2(data1, data2):
+    return ks_2samp(data1, data2)
+
 def KL_divergence(data1, data2):
     return entropy(data1, data2)

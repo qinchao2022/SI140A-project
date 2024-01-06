@@ -29,7 +29,6 @@ Timeline:
 
 5. 其他优化（1/15 - 1/20）
 - 思考红包接龙的最优解
-- 比较微信与qq
 - user-specific mechanism
 - fairness-ware
 - 跟红包总金额、红包总数量的相关性
