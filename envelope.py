@@ -51,3 +51,13 @@ def draw_envelope_graph(envelopes, n, X):
     for i, j in zip(x_label, mean_n):
         plt.text(i, j, '%.2f' % j, ha='center', va='bottom', fontsize=10)
     plt.show()
+
+def draw_variance(envelopes, n):
+    var = np.var(envelopes, axis=1)
+    plt.figure(figsize=(10,3))
+    plt.xlabel("sequence")
+    plt.ylabel("variance")
+    plt.plot(range(1, n + 1), var, 'c', label='variance', markersize=5, markerfacecolor='black', marker='o', markeredgecolor='grey')
+    plt.legend()
+    plt.title("Variance")
+    plt.show()
