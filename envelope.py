@@ -52,6 +52,7 @@ def draw_envelope_graph(envelopes, n, X):
         plt.text(i, j, '%.2f' % j, ha='center', va='bottom', fontsize=10)
     plt.show()
 
+# draw the variance of envelopes
 def draw_variance(envelopes, n):
     var = np.var(envelopes, axis=1)
     plt.figure(figsize=(10,3))
@@ -60,4 +61,52 @@ def draw_variance(envelopes, n):
     plt.plot(range(1, n + 1), var, 'c', label='variance', markersize=5, markerfacecolor='black', marker='o', markeredgecolor='grey')
     plt.legend()
     plt.title("Variance")
+    plt.show()
+    
+# find possibilities of max index, n people, X times
+def find_max_index(envelopes, n, X):
+    distribution = np.zeros(n)
+    for i in range(X):
+        max_index = np.argmax(envelopes[:, i])
+        distribution[max_index] += 1
+    distribution /= X
+    return distribution
+
+# find possibilities of min index, n people, X times
+def find_min_index(envelopes, n, X):
+    distribution = np.zeros(n)
+    for i in range(X):
+        max_index = np.argmin(envelopes[:, i])
+        distribution[max_index] += 1
+    distribution /= X
+    return distribution
+
+# draw the distribution of max index
+def draw_distribution():
+    plt.figure(figsize=(12, 20))
+    for i in range (3, 31):
+        envelopes_distribution = generate_envelopes(100, i, 2000)
+        distribution = find_max_index(envelopes_distribution, i, 2000)
+        plt.subplot(7, 4, i - 2)
+        plt.subplots_adjust(left = 0.1, bottom = 0.1, wspace = 0.7, hspace = 0.7)
+        plt.xlabel("sequence")
+        plt.ylabel("possibility %")
+        plt.plot(range(1, i + 1), distribution * 100, 'c', label='possibility', markersize=5, markerfacecolor='black', marker='o', markeredgecolor='grey')
+        plt.title(f"Distribution of {i}")
+    plt.legend()
+    plt.show()
+    
+# draw the distribution of min index
+def draw_distribution2():
+    plt.figure(figsize=(12, 20))
+    for i in range (3, 31):
+        envelopes_distribution = generate_envelopes(100, i, 2000)
+        distribution = find_min_index(envelopes_distribution, i, 2000)
+        plt.subplot(7, 4, i - 2)
+        plt.subplots_adjust(left = 0.1, bottom = 0.1, wspace = 0.7, hspace = 0.7)
+        plt.xlabel("sequence")
+        plt.ylabel("possibility %")
+        plt.plot(range(1, i + 1), distribution * 100, 'c', label='possibility', markersize=5, markerfacecolor='black', marker='o', markeredgecolor='grey')
+        plt.title(f"Distribution of {i}")
+    plt.legend()
     plt.show()
