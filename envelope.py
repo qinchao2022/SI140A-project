@@ -134,3 +134,30 @@ def draw_distribution3():
         plt.title(f"Distribution of {i}")
     plt.legend()
     plt.show()
+    
+# envelope group note
+def envelope_group_note():
+    plt.figure(figsize=(12, 20))
+    for i in range (3, 31):
+        money_distribution = np.zeros(i)
+        # start with money = 2000
+        money_distribution += 2000
+        # suppose the first person gives money first
+        enveloper = 0
+        for j in range(5000):
+            # every time the envelope of money = 20
+            money_distribution[enveloper] -= 20
+            envelope = random_envelope(20, i)
+            enveloper = np.argmax(envelope)
+            money_distribution += envelope
+            if (money_distribution < 0).any():
+                print(f"interrupting end of game with {j} times in {i} people")
+                break
+        plt.subplot(7, 4, i - 2)
+        plt.subplots_adjust(left = 0.1, bottom = 0.1, wspace = 0.7, hspace = 0.7)
+        plt.xlabel("sequence")
+        plt.ylabel("money")
+        plt.plot(range(1, i + 1), money_distribution, 'c', label='final money', markersize=5, markerfacecolor='black', marker='o', markeredgecolor='grey')
+        plt.title(f"Distribution of {i}")
+    plt.legend()
+    plt.show()
