@@ -161,3 +161,75 @@ def envelope_group_note():
         plt.title(f"Distribution of {i}")
     plt.legend()
     plt.show()
+    
+# fair envelope
+def fair_random_envelope(sum, n):
+    envelope = np.zeros(n)
+    total = 0
+    avg = sum / n
+    parameter = 10
+    for i in range(n):
+        if i == n - 1:
+            envelope[i] = sum - total
+            if envelope[i] < 0.01:
+                envelope[i] = 0.01
+            total += envelope[i]
+            break
+        max = (sum - total) * 200 / (n - i)
+        money = np.random.randint(1, max + 1)
+        if money > avg * 100:
+            money = avg * 100 + (money - avg * 100) / parameter
+        else:
+            money = avg * 100 - (avg * 100 - money) / parameter
+        money = int(money) / 100        
+        if money < 0.01:
+            money = 0.01
+        envelope[i] = money
+        total += money
+        if envelope[i] >= sum or envelope[i] < 0.01 or total > sum:
+            print("error")
+    if (sum - total > 1e6 or total - sum > 1e6):
+        print("error:", sum - total)
+    return envelope
+
+# generate fair envelopes
+def generate_fair_envelopes(sum, n, x):
+    envelopes = np.zeros((x, n))
+    for i in range(x):
+        envelopes[i] = fair_random_envelope(sum, n)
+    return envelopes.T
+
+# generate fair envelopes method 2
+def fair_random_envelope2(sum, n):
+    envelope = np.zeros(n)
+    envelope += sum / n
+    envelope = envelope * 100
+    for i in range(n):
+        envelope[i] = int(envelope[i])
+    parameter = 13
+    # randomly choose two sqeuences and change their money
+    for i in range(100):
+        index1 = np.random.randint(0, n)
+        index2 = np.random.randint(0, n)
+        if index1 == index2:
+            continue
+        envelope[index1] += parameter
+        envelope[index2] -= parameter
+    total = np.sum(envelope)
+    if total < sum * 100:
+        index = np.random.randint(0, n)
+        envelope[index] += sum * 100 - total
+    else:
+        index = np.random.randint(0, n)
+        envelope[index] -= total - sum * 100
+    envelope = envelope / 100
+    if np.sum(envelope) - sum >1e-6 or np.sum(envelope) - sum < -1e-6:
+        print(f"Total != sum of money! {np.sum(envelope)}, {sum}")
+    return envelope
+
+# generate fair envelopes method 2
+def generate_fair_envelopes2(sum, n, x):
+    envelopes = np.zeros((x, n))
+    for i in range(x):
+        envelopes[i] = fair_random_envelope2(sum, n)
+    return envelopes.T
