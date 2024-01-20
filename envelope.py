@@ -6,7 +6,7 @@ def random_envelope(sum, n):
     envelope = np.zeros(n)
     total = 0
     for i in range(n):
-        if i == n - 1:
+        if i == n - 1:  # Last people gets all rest money
             envelope[i] = sum - total
             if envelope[i] < 0.01:
                 envelope[i] = 0.01
@@ -50,6 +50,18 @@ def draw_envelope_graph(envelopes, n, X):
     plt.title("Envelopes")
     for i, j in zip(x_label, mean_n):
         plt.text(i, j, '%.2f' % j, ha='center', va='bottom', fontsize=10)
+    plt.show()
+
+# draw the change of envelope results by time
+def draw_envelope_sequence(envelopes, n, X):
+    plt.figure(figsize=(10,3))
+    plt.xlabel("time")
+    plt.ylabel("money")
+    x = range(1,X+1)
+    for i in range(n):
+        plt.plot(x, envelopes[i], label=i+1, marker='.')
+    plt.title("All envelopes data curves by time")
+    plt.legend(loc="upper right")
     plt.show()
 
 # draw the variance of envelopes
@@ -232,4 +244,58 @@ def generate_fair_envelopes2(sum, n, x):
     envelopes = np.zeros((x, n))
     for i in range(x):
         envelopes[i] = fair_random_envelope2(sum, n)
+    return envelopes.T
+
+# generate fair envelopes method 3
+def fair_random_envelope3(sum, n, probs):
+    envelope = np.zeros(n)
+    total = sum
+    avg = sum / n
+    for i in range(n):
+        while True:
+            if total <= 0:
+                # print("\033[0;31mError: No enough money to distribute. \033[0m")
+                return -1
+            ratio = 2*np.random.uniform(0, probs[i])
+            money = avg * ratio
+            if money < 0.01:
+                money = 0.01
+            if money > total:
+                money = total
+            envelope[i] = money
+            total -= money
+            if envelope[i] < sum and envelope[i] >= 0.01 and total >= 0:
+                break
+            # print("\033[0;31mError on envelope for people", i, "\033[0m")
+            # print("Resampling...")
+    if total != 0:
+        for i in range(n):
+            envelope[i] += total * probs[i] / n
+    if (sum - total > 1e6 or total - sum > 1e6):
+        # print("Error on final number:", sum - total)
+        return -1
+    return envelope
+
+def generate_fair_envelopes3(sum, n, x):
+    envelopes = np.zeros((x, n))
+    probs = np.zeros((x, n))
+    probs += 1.0
+    for i in range(x):
+        while True:
+            this_envelope = fair_random_envelope3(sum, n, probs[i])
+            # Error handlement
+            try:
+                if this_envelope != -1: pass
+            except ValueError:
+                envelopes[i] = this_envelope
+                break
+        # Change probabilities
+        if i < x-1:
+            for j in range(n):
+                if envelopes[i][j] < 0.5 * sum / n: 
+                    probs[i+1][j] = 1.05 * probs[i][j]
+                elif envelopes[i][j] > 2 * sum / n:
+                    probs[i+1][j] = probs[i][j] * 100 / 105
+            norm_var = np.sum(probs[i+1])
+            probs[i+1] = probs[i+1] / norm_var * n
     return envelopes.T
