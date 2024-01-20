@@ -76,8 +76,8 @@ def find_max_index(envelopes, n, X):
 def find_min_index(envelopes, n, X):
     distribution = np.zeros(n)
     for i in range(X):
-        max_index = np.argmin(envelopes[:, i])
-        distribution[max_index] += 1
+        min_index = np.argmin(envelopes[:, i])
+        distribution[min_index] += 1
     distribution /= X
     return distribution
 
@@ -102,6 +102,30 @@ def draw_distribution2():
     for i in range (3, 31):
         envelopes_distribution = generate_envelopes(100, i, 2000)
         distribution = find_min_index(envelopes_distribution, i, 2000)
+        plt.subplot(7, 4, i - 2)
+        plt.subplots_adjust(left = 0.1, bottom = 0.1, wspace = 0.7, hspace = 0.7)
+        plt.xlabel("sequence")
+        plt.ylabel("possibility %")
+        plt.plot(range(1, i + 1), distribution * 100, 'c', label='possibility', markersize=5, markerfacecolor='black', marker='o', markeredgecolor='grey')
+        plt.title(f"Distribution of {i}")
+    plt.legend()
+    plt.show()
+    
+# find median distribution
+def find_med_distribution(envelopes, n, X):
+    distribution = np.zeros(n)
+    for i in range(X):
+        num = np.median(envelopes[:, i])
+        distribution += (envelopes[:, i] >= num)
+    distribution /= X
+    return distribution
+
+# draw the distribution of median
+def draw_distribution3():
+    plt.figure(figsize=(12, 20))
+    for i in range (3, 31):
+        envelopes_distribution = generate_envelopes(100, i, 2000)
+        distribution = find_med_distribution(envelopes_distribution, i, 2000)
         plt.subplot(7, 4, i - 2)
         plt.subplots_adjust(left = 0.1, bottom = 0.1, wspace = 0.7, hspace = 0.7)
         plt.xlabel("sequence")
