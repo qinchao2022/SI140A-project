@@ -21,7 +21,7 @@ Timeline:
 Distribution of team members:
 ||秦朝|张明宇|韩承昊|
 |---|---|---|---|
-|学号|2022533137|||
+|学号|2022533137|2022533100|2022531036|
 |专业|CS|CS|EE|
 |data processing|✔|✔||
 |data analysing|✔|||
@@ -29,3 +29,7 @@ Distribution of team members:
 |model designing|✔|✔|✔|
 |model validating|✔|||
 |further exploration|✔||✔|
+
+Our project has also been updated to github, check and find!
+
+https://github.com/qinchao2022/SI140A-project
